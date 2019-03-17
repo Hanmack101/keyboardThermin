@@ -1,0 +1,77 @@
+
+
+//top button A0
+  int c = 262;
+  int f = 349;
+//second button A2
+  int d = 294;
+  int g = 392;
+
+
+int therSenVal;
+int lightSenLow = 1023;
+int lightSenHigh = 0;
+
+
+void setup() {
+  Serial.begin(9600);
+  while (millis() < 3000){
+      therSenVal = analogRead(A1);
+        if(therSenVal > lightSenHigh){
+            lightSenHigh = therSenVal;
+          }
+          if(therSenVal < lightSenLow){
+              lightSenLow = therSenVal;
+            }
+    
+    }
+    
+  Serial.println("Set up complete");
+  Serial.print("the min light range is ");
+  Serial.println(lightSenLow);
+  Serial.print("the max light range is ");
+  Serial.println(lightSenHigh);
+}
+
+void loop() {
+//thermin
+  //you must redeclare this in order for the thermin to coniniously take in new values
+  therSenVal = analogRead(A1);
+  int therVal = map(therSenVal, lightSenLow, lightSenHigh, 50, 1000);
+  Serial.print("the therValue coming into the theremin is ");
+  Serial.println(therVal);
+
+//buttons  
+  int topButtonResistanceVal = analogRead(A0);
+  int twoButtonResistanceVal = analogRead(A2);
+  
+//first button
+    if(therVal < (lightSenHigh/2) && topButtonResistanceVal >100){
+        tone(8, d);
+        Serial.print("This top button gives a resistance of ");
+        Serial.println(topButtonResistanceVal);
+        Serial.println("note is d");      
+      } else if (therVal > (lightSenHigh/2) && topButtonResistanceVal >100) {
+          tone(8, g);
+          Serial.println("note is g");               
+        } else {
+          noTone(8);
+        }
+
+//second button
+    if(therVal < (lightSenHigh/2) && twoButtonResistanceVal >100){
+        tone(8, c);
+        Serial.print("This second button gives a resistance of ");
+        Serial.println(twoButtonResistanceVal);
+        Serial.println("note is c");      
+      } else if (therVal > (lightSenHigh/2) && twoButtonResistanceVal >100) {
+          tone(8, f);
+          Serial.println("note is f");               
+        } else {
+          noTone(8);
+        }
+
+
+}
+
+
